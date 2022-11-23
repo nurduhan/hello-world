@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<link rel="stylesheet" href="bluestyle.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js">
+	</script>
+    
+    <body ng-app="myApp">
+    
+    	<p>Root Scope rengi : {{color}}</p>
+    
+    	<div ng-controller="myCtrl">
+        
+        	<p>Scope rengi : {{color}}</p>
+            
+        	<input ng-model="firstname +' '+ lastname">
+            <input ng-model="othername">
+            <h1>Sağdaki kutucuğu yaz: {{othername}}</h1>
+            <p>Soldaki kutucuğu bas: {{firstname + lastname}}</p>
+            <h1 ng-click="changeName()"> Tıkla ve değiştir => {{firstname}}</h1>
+            
+            <p>Birleştirip yazıldı => {{fullname()}}</p>
+            
+            <p>Aşağıda loop yapıldı</p>
+            <li ng-repeat="i in multiplenames | orderBy:'name'">
+            	{{i.name +", "+ i.country}}
+            </li>
+            
+            <p ng-repeat="i in multiplenames | orderBy:'country'" ng-if="$last">Looptaki son isim: {{i.name}}</p>
+            
+            <table border="1" width="100%">
+				<tr>
+					<th ng-click="orderByMe('name')">İsme göre sıralama için tıkla</th>
+					<th ng-click="orderByMe('country')">Ülkeye göre sıralamak için tıkla</th>
+				</tr>
+				<tr ng-repeat="x in multiplenames | orderBy:myOrderBy">
+					<td>{{x.name}}</td>
+					<td>{{x.country}}</td>
+				</tr>
+			</table>
+            
+            <p>Bu sayfanın URL'i: {{myUrl}}</p>
+            
+            <p>Bu yazı html servisinden alındı => {{myWelcome}}</p>
+            
+            <h1>{{myHeader}}</h1>
+            
+            <select ng-model="selectedCar" ng-options="x for (x, y) in cars"></select>
+            
+            <select ng-model="selectedName" ng-options="x.name for x in multiplenames"></select>
+            
+            <h2>Soldaki kutucukta seçtiğin araç: {{selectedCar}}</h2>
+            
+            <h1>Sağdaki kutucukta seçimin: {{selectedName.name}}</h1>
+            <h1>{{selectedName.name + ", "}} {{selectedName.country + " ülkesinden"}}</h1>
+            
+        </div>
+        
+        <script>
+        var app = angular.module('myApp', []);
+        
+        app.run(function($rootScope) {
+        	$rootScope.color = 'blue';
+        });
+        
+        app.controller('myCtrl', function($scope, $location, $http, $timeout) {
+        	$scope.color = 'red'
+        	$scope.firstname = "John";
+        	$scope.lastname = "Doe";
+            $scope.changeName = function() {
+            	$scope.firstname = "Ali";
+                $scope.lastname = "Veli";
+            }
+            $scope.fullname = function() {
+            	return $scope.firstname + " " + $scope.lastname;
+            }
+            $scope.multiplenames = [
+            {name:'Ali',country:'Türkiye'},
+            {name:'Jason',country:'USA'},
+            {name:'Didier',country:'France'},
+            {name:'Filippo',country:'Italy'},
+            {name:'Uche',country:'Togo'}
+            ];
+            $scope.orderByMe = function(i) {
+            	$scope.myOrderBy = i;
+            }
+            $scope.myUrl = $location.absUrl();
+            $http.get("welcome.htm").then(function (response) {
+            	$scope.myWelcome = response.data;
+            });
+            $scope.myHeader = "Bu yazı 3 saniye sonra değişecek";
+            $timeout(function () {
+            	$scope.myHeader = "Yazı değişti";
+            }, 3000);
+            $scope.cars = {
+            Car1:"BMW",
+            Car2:"Mercedes",
+            Car3:"Audi",
+            Car4:"Togg"
+            }
+            $scope.myHide
+        });
+        
+        
+        </script>
+    
+    
+    </body>
+
+
+</html>
